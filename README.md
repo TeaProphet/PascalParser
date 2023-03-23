@@ -12,16 +12,22 @@
 +, –, *, /, div, mod, =, <, >, <=, >=, not  
 
 ### Операторы:
-if then [else], for, while, do while
+* if then [else]
+* for
+* while
+* do while
   
 ### Процедуры и функции:
 Передача параметров простых типов (не массивов) только по значению
 
 ### Ввод/вывод:
-Write/WriteLn, Read/ReadLn
+* Write/WriteLn
+* Read/ReadLn
 
 ### Системные функции:
-Inc, Dec, Abs
+* Inc 
+* Dec
+* Abs
 
 ## Авторы:
 * Ефремов Владислав Андреевич  
