@@ -2,6 +2,7 @@ Program beer;
             var
             e, b : integer;
             d, f: array [1 .. 100] of integer;
+            h, i: boolean;
 
             function Alpha(a: integer):integer;
             var g: integer;
@@ -11,6 +12,8 @@ Program beer;
 
             BEGIN
             e:=0;
+            h:=e>0;
+            i:=not h;
             while (g<10) do
             begin
                 d[1]:=g;
