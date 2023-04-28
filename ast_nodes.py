@@ -3,6 +3,7 @@ from typing import Callable, Tuple, Optional, Union
 from enum import Enum
 import inspect
 
+
 # Абстрактный класс - узел AST-дерева
 # Все рализованные далее классы узлов являются потомками этого класса
 class AstNode(ABC):
@@ -39,8 +40,10 @@ class AstNode(ABC):
     def __getitem__(self, index):
         return self.childs[index] if index < len(self.childs) else None
 
+
 class ExprNode(AstNode):
     pass
+
 
 # Узел содержащий значение переменной и ее типа
 class LiteralNode(ExprNode):
@@ -65,8 +68,6 @@ class IdentNode(ExprNode):
         return str(self.name)
 
 
-
-
 # Узел содержащий элементы массива
 class ArrayIdentNode(ExprNode):
     def __init__(self, name: IdentNode, literal: LiteralNode, row: Optional[int] = None, line: Optional[int] = None,
@@ -81,6 +82,7 @@ class ArrayIdentNode(ExprNode):
 
     def __str__(self) -> str:
         return '{0} [{1}]'.format(self.name, self.literal)
+
 
 # Перечисление содержащее символы для бинарных операций
 class BinOp(Enum):
@@ -98,6 +100,7 @@ class BinOp(Enum):
     LT = '<'
     LOGICAL_AND = 'and'
     LOGICAL_OR = 'or'
+
 
 # Узел реализующий бинарную операцию
 class BinOpNode(ExprNode):
@@ -118,6 +121,7 @@ class BinOpNode(ExprNode):
 
 class StmtNode(ExprNode):
     pass
+
 
 # Узел содержащий список переменных определенного типа
 class IdentListNode(StmtNode):
@@ -144,7 +148,7 @@ class TypeSpecNode(StmtNode):
 
 
 class VarDeclNode(StmtNode):
-    def __init__(self, ident_list: IdentListNode, vars_type: TypeSpecNode,  # *vars_list: Tuple[AstNode, ...],
+    def __init__(self, ident_list: IdentListNode, vars_type: TypeSpecNode,
                  row: Optional[int] = None, line: Optional[int] = None, **props):
         super().__init__(row=row, line=line, **props)
         self.ident_list = ident_list
@@ -156,6 +160,7 @@ class VarDeclNode(StmtNode):
 
     def __str__(self) -> str:
         return 'var_dec'
+
 
 # Узел реализующий объявление массива, переменную, размерность и тип
 # name идентификатор массива
@@ -180,6 +185,7 @@ class ArrayDeclNode(StmtNode):
     def __str__(self) -> str:
         return 'arr_decl'
 
+
 # Узел реализующий раздел описания переменных
 class VarsDeclNode(StmtNode):
     def __init__(self, *var_decs: Tuple[VarDeclNode, ...],
@@ -193,6 +199,7 @@ class VarsDeclNode(StmtNode):
 
     def __str__(self) -> str:
         return 'var'
+
 
 # Узел реализующий вызов функций или процедур
 class CallNode(StmtNode):
@@ -209,6 +216,7 @@ class CallNode(StmtNode):
 
     def __str__(self) -> str:
         return 'call'
+
 
 # Узел реализующий операцию присваивания переменной var значения val
 class AssignNode(StmtNode):
@@ -247,6 +255,7 @@ class IfNode(StmtNode):
     def __str__(self) -> str:
         return 'if'
 
+
 # Узел реализующий цикл while
 # cond логическое выражение внутри while
 # stmt_list операторы в теле цикла
@@ -263,6 +272,7 @@ class WhileNode(StmtNode):
 
     def __str__(self) -> str:
         return 'while'
+
 
 # Узел описывающий цикл с параметром for
 # init начальное значение
@@ -285,6 +295,7 @@ class ForNode(StmtNode):
     def __str__(self) -> str:
         return 'for'
 
+
 # Узел содержащий список выражений
 class StmtListNode(StmtNode):
     def __init__(self, *exprs: StmtNode,
@@ -298,6 +309,7 @@ class StmtListNode(StmtNode):
 
     def __str__(self) -> str:
         return '...'
+
 
 # Узел являющийся телом (внутренности между begin и end) содержащий список выражений
 class BodyNode(ExprNode):
@@ -313,6 +325,7 @@ class BodyNode(ExprNode):
     def __str__(self) -> str:
         return 'Body'
 
+
 # Узел содержащий параметры функции, процедуры
 class ParamsNode(StmtNode):
     def __init__(self, *vars_list: VarDeclNode,
@@ -326,6 +339,7 @@ class ParamsNode(StmtNode):
 
     def __str__(self) -> str:
         return 'params'
+
 
 # Узел описывающий программу
 # prog_name название программы
@@ -347,13 +361,14 @@ class ProgramNode(ExprNode):
     def __str__(self) -> str:
         return 'Program'
 
+
 # Узел содержщий объявление процедуры
 # число параметров *args зависит от того, объявили мы процедуру с параметрами или без
 class ProcedureDeclNode(ExprNode):
     def __init__(self, *args, **props):
         super().__init__(row=_empty, line=_empty, **props)
         self.proc_name = args[0]
-        if(len(args) == 4):
+        if (len(args) == 4):
             self.params = args[1]
             self.vars_decl = args[2]
             self.stmt_list = args[3]
@@ -366,7 +381,6 @@ class ProcedureDeclNode(ExprNode):
     def childs(self) -> Tuple[AstNode, ...]:
         return (self.proc_name,) + (self.params,) + (self.vars_decl,) + (self.stmt_list,)
 
-
     def __str__(self) -> str:
         return 'procedure'
 
@@ -374,7 +388,7 @@ class ProcedureDeclNode(ExprNode):
 # Узел содержщий объявление функции
 # число параметров *args зависит от того, объявили мы функцию с параметрами или без
 class FunctionDeclNode(ExprNode):
-    def __init__(self,*args,**props):
+    def __init__(self, *args, **props):
         super().__init__(row=_empty, line=_empty, **props)
         self.proc_name = args[0]
         if (len(args) == 5):

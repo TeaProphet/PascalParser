@@ -1,5 +1,6 @@
 import os
 from parser import *
+from semantic import *
 
 
 def main():
@@ -7,6 +8,8 @@ def main():
     g = PascalGrammar()
     prog = g.parse(prog)
     print(*prog.tree, sep=os.linesep)
+    symb_table_builder = SemanticAnalyzer()
+    symb_table_builder.visit(prog)
 
 
 def write_file(file_path, content):

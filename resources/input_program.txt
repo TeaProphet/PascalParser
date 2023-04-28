@@ -2,6 +2,7 @@ Program beer;
             var
             e, b : integer;
             d, f: array [1 .. 100] of integer;
+            g: integer;
 
             function Alpha(a: integer):integer;
             var g: integer;

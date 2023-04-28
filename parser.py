@@ -3,6 +3,7 @@ import pyparsing as pp
 from pyparsing import pyparsing_common as ppc
 from ast_nodes import *
 
+
 # Класс описывающий грамматику языка Pascal
 class PascalGrammar:
     def __init__(self):
@@ -50,7 +51,6 @@ class PascalGrammar:
         array_ident = ident + LBRACK + literal + RBRACK
         call = ident + LPAR + pp.Optional(expr + pp.ZeroOrMore(COMMA + expr)) + RPAR
 
-
         group = (
                 literal |
                 call |
@@ -68,8 +68,7 @@ class PascalGrammar:
 
         expr << (logical_or)
 
-
-        #simple_assign = ((ident | array_ident) + ASSIGN.suppress() + expr).setName('assign')
+        # simple_assign = ((ident | array_ident) + ASSIGN.suppress() + expr).setName('assign')
         # type_arr = ARRAY + LBRACK + num + pp.Literal("..").suppress() + num + RBRACK + OF + type_spec
         ident_list = ident + pp.ZeroOrMore(COMMA + ident)
         var_decl = ident_list + COLON + type_spec
@@ -83,7 +82,8 @@ class PascalGrammar:
         for_body = stmt | pp.Group(SEMI).setName('stmt_list')
         for_cond = assign + pp.Keyword("to").suppress() + literal
 
-        if_ = pp.Keyword("if").suppress() + pp.ZeroOrMore(LPAR) + expr + pp.ZeroOrMore(RPAR) + pp.Keyword("then").suppress() \
+        if_ = pp.Keyword("if").suppress() + pp.ZeroOrMore(LPAR) + expr + pp.ZeroOrMore(RPAR) + pp.Keyword(
+            "then").suppress() \
               + stmt + pp.Optional(pp.Keyword("else").suppress() + stmt)
         while_ = pp.Keyword("while").suppress() + LPAR + expr + RPAR + pp.Keyword("do").suppress() + stmt
         for_ = pp.Keyword("for").suppress() + LPAR + for_cond + RPAR + pp.Keyword("do").suppress() + for_body
@@ -101,8 +101,8 @@ class PascalGrammar:
         stmt_list << (pp.ZeroOrMore(stmt + pp.ZeroOrMore(SEMI)))
 
         body = LBRACE + stmt_list + RBRACE
-        #params = pp.ZeroOrMore(ident + pp.ZeroOrMore(COMMA + ident) + COLON + type_spec + SEMI) + \
-        #(ident + pp.ZeroOrMore(COMMA + ident) + COLON + type_spec)
+        # params = pp.ZeroOrMore(ident + pp.ZeroOrMore(COMMA + ident) + COLON + type_spec + SEMI) + \
+        # (ident + pp.ZeroOrMore(COMMA + ident) + COLON + type_spec)
         params = LPAR + pp.ZeroOrMore(var_decl) + pp.ZeroOrMore(COMMA + var_decl) + RPAR
         procedure_decl << pp.Keyword("procedure").suppress() + ident + params + SEMI + vars_decl + body + SEMI
         function_decl << pp.Keyword("function").suppress() + ident + params + COLON + type_spec + SEMI + \
@@ -111,6 +111,7 @@ class PascalGrammar:
         program = pp.Keyword("Program").suppress() + ident + SEMI + pp.Optional(vars_decl) + body + DOT
 
         start = program.ignore(pp.cStyleComment).ignore(pp.dblSlashComment) + pp.StringEnd()
+
         def parse(rule_name: str, parser: pp.ParserElement) -> None:
             if rule_name == rule_name.upper():
                 return
@@ -144,7 +145,6 @@ class PascalGrammar:
                 parse(var_name, value)
 
         return start
-
 
     def parse(self, prog: str) -> StmtListNode:
         return self.parser.parseString(str(prog))[0]
